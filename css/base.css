@@ -115,6 +115,7 @@ input[type=date]:focus, {
 .task-list .action {
   color: #999;
   font-size: 90%;
+  margin: 0 2px;
 }
 
 .task-list .action:hover {

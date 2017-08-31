@@ -1,66 +1,107 @@
 ;(function() {
   'use strict';
 
-  var $add_task = $('.add-task'),
-      task_list = {};
+   var $taskDelete,
+      // $task_detail = $('dask-detail'),
+      // $task_detail_mask = $('dask-detail-mask'),
+      taskList = [];
 
   init();
 
-  $add_task.on('submit', function(e){
-    var new_task = {};
-    e.preventDefault();
 
-    // get the value of task
-    $input = $(this).find('input[name=content]');
-    new_task.content = $input.val();
+  // Listener form submit
+  function listenerSub() {
+    var $taskAdd = $('.add-task');
 
-    if(!new_task.content) return;
-    if (add_task(new_task)) {
-      render_task_list();
-      // 清空输入框的值
-      $input.val(null);
-    }
-  });
+    $taskAdd.on('submit', function(e){
+      e.preventDefault();
+      var newTask = {},
+          $input;
 
-  function add_task(new_task) {
-    // new task push into the new_list and localStorage is updated
-    console.log(task_list);
-    task_list.push(new_task);
-    console.log(task_list);
-    store.set('task_list', task_list);
-    console.log('task_list',task_list)
+      // get the value of task
+      $input = $(this).find('input[name=content]');
+      newTask.content = $input.val();
+
+      if(!newTask.content) return;
+      if (taskAdd(newTask)) {
+        renderTask();
+        // 清空输入框的值
+        $input.val(null);
+      }
+    });
+  }
+
+  // Listening task Delete key
+  function listenerDel() {
+    $taskDelete.on('click', function() {
+      var $this = $(this);
+      var $item = $this.parent().parent();
+      var index = $item.data('index');
+      var tmp = confirm('Are you true Delete this task?');
+      return tmp ? taskDel(index) : null;
+    });
+  }
+
+
+  // Add
+  function taskAdd(newTask) {
+    // new task push into the newList also localStorage is updated
+    taskList.push(newTask);
+    refreshData();
+
     return true;
   }
 
-  // render HTML
-  function render_task_list() {
-    var $task_list = $('.task-list'),
-        $task;
+  // Delete
+  function taskDel(index) {
+    // if there is no index or the index in the taskList notexist
+    if(index === undefined || !taskList[index]) return;
 
-    $task_list.html('');
-    for(var i = 0;i < task_list.length; i ++) {
-      $task = render_task_tpl(task_list[i]);
-      $task_list.append($task);
-    }
+    delete taskList[index];
+    refreshData();
   }
 
-  function render_task_tpl(data) {
-    var list_item_tpl  = '<div class="task-item">' +
+  // refresh localStorage and render template
+  function refreshData() {
+    store.set('taskList', taskList);
+    renderTask();
+  }
+
+  // Render task list
+  function renderTask() {
+    var $taskList = $('.task-list'),
+        $task;
+
+    $taskList.html('');
+    for(var i = 0;i < taskList.length; i ++) {
+      $task = renderItem(taskList[i], i);
+      $taskList.append($task);
+    }
+
+    // After the rendering is complete, add the monitor
+    $taskDelete = $('.action.delete');
+    listenerDel();
+  }
+
+  // Task list HTML template
+  function renderItem(data, index) {
+    if (!data || !index) return;
+    var listItemTpl  = '<div class="task-item" data-index="' +  index + '">' +
                             '<span><input type="checkbox"></span>' +
                             '<span class="task-content">' + data.content + '</span>' +
                             '<span class="fr">' +
-                              '<span class="action"> 删除</span>' +
+                              '<span class="action delete"> 删除</span>' +
                               '<span class="action"> 详情</span>' +
                             '</span>' +
                          '</div>';
-    return $(list_item_tpl);
+    return $(listItemTpl);
   }
 
   function init() {
-    task_list = store.get('task_list') || [];
-    console.log('task_list', task_list)
-    if (task_list.length) {
-      render_task_list();
+    taskList = store.get('taskList') || [];
+    listenerSub();
+    if (taskList.length) {
+      renderTask();
     }
   }
 
