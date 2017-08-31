@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>My Todo List</title>
+	<link rel="stylesheet" type="text/css" href="css/base.css">
+</head>
+<body>
+	<div class="container">
+		<h1>My Todo</h1>
+		<form class="add-task">
+			<input name="content"
+			       type="text"
+			       placeholder="E.g.  请问您今天要来点兔子吗?"
+			       autofocus
+			       autocomplete="off"
+			 >
+			<button type="submit">submit</button>
+		</form>
+		<!-- Inventory list -->
+		<div class="task-list">
+<!-- 			<div class="task-item">
+				<span><input type="checkbox"></span>
+				<span class="task-content">item content 1</span>
+				<span>delate</span>
+				<span>detail</span>
+			</div> -->
+		</div>
+		<div class="task-detail-mask"></div>
+		<!-- Task details begin -->
+		<div class="task-detail">
+			<!-- Title -->
+			<div class="content">请问您今天要来点兔子吗</div>
+			<!-- details -->
+			<div>
+				<div class="desc">
+					<textarea></textarea>
+				</div>
+			</div>
+			<!-- Task timing reminder -->
+			<div class="remind">
+				<input type="date">
+				<!-- <button type="submit">submit</button> -->
+			</div>
+		</div>
+	</div>
+	<script src="node_modules/jquery/dist/jquery.js"></script>
+	<script src="node_modules/store/store.js"></script>
+	<script src="js/base.js"></script>
+</body>
+</html>
