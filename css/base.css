@@ -136,6 +136,7 @@ input[type=date]:focus, {
 }
 
 .task-detail-mask,
+.task-detail,
 .task-item,
 textarea,
 button,
@@ -165,9 +166,11 @@ input {
   color: #333;
   padding: 10px;
   background: #fff;
+    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0 ,.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0 ,.1);
 }
 
-.task-detail > * {
+.task-detail .input-item {
   margin-bottom: 10px;
 }
 
