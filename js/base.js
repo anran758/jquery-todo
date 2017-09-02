@@ -9,16 +9,64 @@
     currentIndex,
     $updataForm,
     $taskDetailCont,
-    $taskDetailContInput;
+    $taskDetailContInput,
+    $checkboxComplete,
+    $msg = $('.msg'),
+    $msgContent = $msg.find('.msg-content'),
+    $msgConfirm = $msg.find('.comfirmed'),
+    $alerter = $('.alerter');
 
   init();
 
   function init() {
     taskList = store.get('taskList') || [];
     listenerSub();
+    listenerMsgEvent();
     if (taskList.length) {
       renderTask();
+      remindCheck();
     }
+  }
+
+  function listenerMsgEvent() {
+    $msgConfirm.on('click', function() {
+      hideMsg();
+    });
+  }
+
+  function remindCheck() {
+    var currTimestamp;
+    var itl = setInterval(function() {
+      for(var i = 0; i < taskList.length; i++) {
+        var item = get(i);
+        var taskTImestamp;
+
+        if(!item || !item.remindDate || item.informed) continue;
+
+        currTimestamp = (new Date()).getTime();
+        taskTImestamp = (new Date(item.remindDate)).getTime();
+        if (currTimestamp - taskTImestamp >= 1) {
+          updataTask(i, {informed: true});
+          showMsg(item.content);
+        }
+      }
+    }, 500);
+
+  }
+
+  function showMsg(msg) {
+    if(!msg) return;
+    $msgContent.html(msg).show();
+    $alerter.get(0).play();
+    $msg.show();
+  }
+
+  function hideMsg() {
+    $msg.hide();
+  }
+
+  function get(index) {
+    return store.get('taskList')[index];
   }
 
   // Listener form submit
@@ -68,27 +116,45 @@
   // Render task list
   function renderTask() {
     var $taskList = $('.task-list'),
-      $task;
+        $task;
+    var completeItems = [],
+        item;
 
     // Traverse the taskList into the template
     $taskList.html('');
     for (var i = 0; i < taskList.length; i++) {
-      $task = renderItem(taskList[i], i);
+      item = taskList[i];
+
+      // 判断状态是否完成, 是的话就push到新数组
+      if(item && item.complete) {
+        completeItems[i] = item;
+      } else {
+        $task = renderItem(item, i);
+      }
       $taskList.prepend($task);
+    }
+
+    for (var j = 0; j < completeItems.length; j ++) {
+      $task = renderItem(completeItems[j], j);
+      if (!$task) continue;
+      $task.addClass('completed');
+      $taskList.append($task);
     }
 
     // After the rendering is complete, add the listeners
     $taskDelete = $('.action.delete');
     $taskDetailSwitch = $('.action.detail');
+    $checkboxComplete = $('.task-list .complete');
     listenerDel();
     listenerDetail();
+    listenerComplete();
   }
 
   // Task list HTML template
   function renderItem(data, index) {
     if (!data || !index) return;
     var listItemTpl = '<div class="task-item" data-index="' + index + '">' +
-      '<span><input type="checkbox"></span>' +
+      '<span><input class="complete" ' + (data.complete ? 'checked' : '') + ' type="checkbox"></span>' +
       '<span class="task-content">' + data.content + '</span>' +
       '<span class="fr">' +
       '<span class="action delete"> 删除</span>' +
@@ -127,6 +193,21 @@
     });
   }
 
+  function listenerComplete() {
+    $checkboxComplete.on('click', function() {
+      var $this = $(this);
+      // var isComplete = $this.is(':checked');
+
+      var index = $this.parent().parent().data('index');
+      var item = get(index);
+      if(item.complete) {
+        updataTask(index, {complete: flase});
+      } else {
+        updataTask(index, {complete: true});
+      }
+    });
+  }
+
   // Show task detail
   function showDetail(index) {
     // Render detail HTML
@@ -161,13 +242,18 @@
       '</div>' +
       '</div>' +
       '<div class="remind input-item">' +
-      '<input name="remindDate" type="date" value="' + item.remindDate + '">' +
+        '<label>提醒时间</label>' +
+        '<input class="datetime" name="remindDate" type="text" value="' + (item.remindDate || '') + '">' +
       '</div>' +
       '<div class="input-item"><button type="submit">更新</button></div>' +
       '</form>';
 
+    // rest template
     $taskDetail.html(null);
     $taskDetail.html(tpl);
+    $('.datetime').datetimepicker();
+
+
     $updataForm = $taskDetail.find('form');
     $taskDetailCont = $updataForm.find('.content');
     $taskDetailContInput = $updataForm.find('[name=content]');
@@ -193,7 +279,7 @@
   function updataTask(index, data) {
     if (!index || !taskList[index]) return;
 
-    taskList[index] = data;
+    taskList[index] = $.extend({}, taskList[index], data);
     refreshData();
   }
 

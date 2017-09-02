@@ -4,8 +4,13 @@
 	<meta charset="UTF-8">
 	<title>My Todo List</title>
 	<link rel="stylesheet" type="text/css" href="css/base.css">
+	<link rel="stylesheet" type="text/css" href="node_modules/jquery-datetimepicker/build/jquery.datetimepicker.min.css">
 </head>
 <body>
+<div class="msg">
+	<span class="msg-content"></span>
+	<span class="anchor comfirmed">知道了</span>
+</div>
 	<div class="container">
 		<h1>My Todo</h1>
 		<form class="add-task">
@@ -32,8 +37,10 @@
 
 		</div>
 	</div>
+	<video  class="alerter" src="alert.mp3"></video>
 	<script src="node_modules/jquery/dist/jquery.js"></script>
 	<script src="node_modules/store/store.js"></script>
+	<script src="node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
 	<script src="js/base.js"></script>
 </body>
 </html>
