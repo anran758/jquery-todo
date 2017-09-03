@@ -28,6 +28,126 @@
     }
   }
 
+  function pop(arg) {
+    if (!arg) {
+      console.error('pop title is required.');
+    }
+
+    var conf = {},
+        $box,
+        $mask,
+        $title,
+        $content,
+        $confirm,
+        $cancel,
+        dfd,
+        timer,
+        confirmed,
+        $body = $('body'),
+        $window = $(window);
+
+    dfd = $.Deferred();
+
+    if(typeof arg === 'string') {
+      conf.title = arg;
+    } else {
+      conf = $.extend(conf, arg);
+    }
+
+
+    $box = $('<div>' +
+       '<div class="pop-title">' + conf.title + '</div>' +
+       '<div class="pop-content">' +
+         '<div>' +
+           '<button class="primary confirm">确定</button>' +
+           '<button class="cancel">取消</button>' +
+         '</div>' +
+       '</div>' +
+      '</div>').css({
+      position: 'fixed',
+      width: 300,
+      height: 'auto',
+      padding: '15px 10px',
+      color: '#444',
+      background: '#fff',
+      'border-radius': 3,
+      'box-shadow': '0 1px 2px rgba(0, 0, 0, .5)',
+      'text-align': 'center'
+    });
+
+    $title = $box.find('.pop-title').css({
+      padding: '5px 10px',
+      'font-weight': 900,
+      'font-size': 20,
+    });
+
+    $content = $box.find('.pop-content'). css({
+      padding: '5px 10px'
+    });
+
+    $confirm = $content.find('.confirm');
+    $cancel = $content.find('.cancel');
+
+    $mask = $('<div></div>').css({
+      position: 'fixed',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      background: 'rgba(0,0,0,.5)'
+    });
+
+    timer = setInterval(function() {
+      if (confirmed !== undefined) {
+        dfd.resolve(confirmed);
+        clearInterval(timer);
+        dismissPop();
+      }
+    }, 50);
+
+    $confirm.on('click', onConfirm);
+    $cancel.on('click', onCancel);
+    $mask.on('click', onCancel);
+
+    function onConfirm() {
+      confirmed = true;
+    }
+
+    function onCancel() {
+      confirmed = false;
+    }
+
+    function dismissPop() {
+      $mask.remove();
+      $box.remove();
+    }
+
+    function adjustBox() {
+      var windowWidth = $window.width(),
+          windowHeight = $window.height(),
+          boxWidth = $box.width(),
+          boxHeight = $box.height(),
+          moveX, moveY;
+
+      moveX = (windowWidth - boxWidth) / 2;
+      moveY = (windowHeight - boxHeight) / 2 - 20;
+
+      $box.css({
+        left: moveX,
+        top: moveY,
+      });
+    }
+
+    $window.on('resize', function() {
+      adjustBox();
+    });
+
+    $mask.appendTo($body);
+    $box.appendTo($body);
+    $window.resize();
+    return dfd.promise();
+  }
+
   function listenerMsgEvent() {
     $msgConfirm.on('click', function() {
       hideMsg();
@@ -170,8 +290,10 @@
       var $this = $(this);
       var $item = $this.parent().parent();
       var index = $item.data('index');
-      var tmp = confirm('Are you true Delete this task?');
-      return tmp ? taskDel(index) : null;
+
+      pop('Are you true Delete this task?').then(function(r) {
+        r ? taskDel(index) : null;
+      });
     });
   }
 
