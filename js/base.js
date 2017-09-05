@@ -13,13 +13,15 @@
     $checkboxComplete,
     $msg = $('.msg'),
     $msgContent = $msg.find('.msg-content'),
-    $msgConfirm = $msg.find('.comfirmed'),
-    $alerter = $('.alerter');
+    $msgConfirm = $msg.find('.comfirmed');
 
   init();
 
   function init() {
+    // 是否有缓存
     taskList = store.get('taskList') || [];
+
+    // Event listener
     listenerSub();
     listenerMsgEvent();
     if (taskList.length) {
@@ -28,7 +30,9 @@
     }
   }
 
+  // Delete alerter
   function pop(arg) {
+    // 参数不能为空, 否则报错
     if (!arg) {
       console.error('pop title is required.');
     }
@@ -177,7 +181,7 @@
   function showMsg(msg) {
     if(!msg) return;
     $msgContent.html(msg).show();
-    $alerter.get(0).play();
+     $('.alerter').get(0).play();
     $msg.show();
   }
 
@@ -196,7 +200,7 @@
     $taskAdd.on('submit', function(e) {
       e.preventDefault();
       var newTask = {},
-        $input;
+          $input;
 
       // get the value of task
       $input = $(this).find('input[name=content]');
@@ -211,6 +215,7 @@
     });
   }
 
+  // Add and delete task
   function taskAdd(newTask) {
     // new task push into the newList also localStorage is updated
     taskList.push(newTask);
@@ -227,20 +232,20 @@
     refreshData();
   }
 
-  // refresh localStorage and render template
+  // 更新数据库并调用渲染模板
   function refreshData() {
     store.set('taskList', taskList);
     renderTask();
   }
 
-  // Render task list
+  // 渲染 task list 结构
   function renderTask() {
     var $taskList = $('.task-list'),
         $task;
     var completeItems = [],
         item;
 
-    // Traverse the taskList into the template
+    // 先清空原先就模板, 再遍历 taskList 里的task到item中
     $taskList.html('');
     for (var i = 0; i < taskList.length; i++) {
       item = taskList[i];
@@ -274,12 +279,12 @@
   function renderItem(data, index) {
     if (!data || !index) return;
     var listItemTpl = '<div class="task-item" data-index="' + index + '">' +
-      '<span><input class="complete" ' + (data.complete ? 'checked' : '') + ' type="checkbox"></span>' +
-      '<span class="task-content">' + data.content + '</span>' +
-      '<span class="fr">' +
-      '<span class="action delete"> 删除</span>' +
-      '<span class="action detail"> 详情</span>' +
-      '</span>' +
+        '<span><input class="complete" ' + (data.complete ? 'checked' : '') + ' type="checkbox"></span>' +
+        '<span class="task-content">' + data.content + '</span>' +
+        '<span class="fr">' +
+          '<span class="action delete"> 删除</span>' +
+          '<span class="action detail"> 详情</span>' +
+        '</span>' +
       '</div>';
     return $(listItemTpl);
   }
@@ -318,10 +323,9 @@
   function listenerComplete() {
     $checkboxComplete.on('click', function() {
       var $this = $(this);
-      // var isComplete = $this.is(':checked');
-
       var index = $this.parent().parent().data('index');
       var item = get(index);
+
       if(item.complete) {
         updataTask(index, {complete: flase});
       } else {
