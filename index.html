@@ -1,46 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>My Todo List</title>
-	<link rel="stylesheet" type="text/css" href="css/base.css">
-	<link rel="stylesheet" type="text/css" href="node_modules/jquery-datetimepicker/build/jquery.datetimepicker.min.css">
+  <meta charset="UTF-8">
+  <title>My Todo List</title>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="css/base.css">
+  <link rel="stylesheet" type="text/css" href="node_modules/jquery-datetimepicker/build/jquery.datetimepicker.min.css">
+
 </head>
 <body>
 <div class="msg">
-	<span class="msg-content"></span>
-	<span class="anchor comfirmed">知道了</span>
+  <span class="msg-content"></span>
+  <span class="anchor comfirmed">知道了</span>
 </div>
-	<div class="container">
-		<h1>My Todo</h1>
-		<form class="add-task">
-			<input name="content"
-			       type="text"
-			       placeholder="E.g.  请问您今天要来点兔子吗?"
-			       autofocus
-			       autocomplete="off"
-			 >
-			<button type="submit">submit</button>
-		</form>
-		<!-- Inventory list -->
-		<div class="task-list">
-<!-- 			<div class="task-item">
-				<span><input type="checkbox"></span>
-				<span class="task-content">item content 1</span>
-				<span>delate</span>
-				<span>detail</span>
-			</div> -->
-		</div>
-		<div class="task-detail-mask"></div>
-		<!-- Task details begin -->
-		<div class="task-detail">
+  <div class="container">
+    <h1>My Todo</h1>
+    <form class="add-task">
+      <input name="content"
+             type="text"
+             placeholder="E.g.  请问您今天要来点兔子吗?"
+             autofocus
+             autocomplete="off"
+       >
+      <button type="submit">submit</button>
+    </form>
+    <!-- Inventory list -->
+    <div class="task-list">
+    </div>
+    <div class="task-detail-mask"></div>
+    <!-- Task details begin -->
+    <div class="task-detail">
 
-		</div>
-	</div>
-	<video  class="alerter" src="alert.mp3"></video>
-	<script src="node_modules/jquery/dist/jquery.js"></script>
-	<script src="node_modules/store/store.js"></script>
-	<script src="node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
-	<script src="js/base.js"></script>
+    </div>
+  </div>
+  <video  class="alerter" src="alert.mp3"></video>
+  <script src="node_modules/jquery/dist/jquery.js"></script>
+  <script src="node_modules/store/store.js"></script>
+  <script src="node_modules/jquery-datetimepicker/build/jquery.datetimepicker.full.min.js"></script>
+  <script src="js/base.js"></script>
 </body>
 </html>

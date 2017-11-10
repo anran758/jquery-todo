@@ -238,7 +238,7 @@
     renderTask();
   }
 
-  // 渲染 task list 结构
+  // 渲染 task list 数据
   function renderTask() {
     var $taskList = $('.task-list'),
         $task;
@@ -250,7 +250,7 @@
     for (var i = 0; i < taskList.length; i++) {
       item = taskList[i];
 
-      // 判断状态是否完成, 是的话就push到新数组
+      // 判断状态是否完成, 是的话就push到新数组, 初次渲染就直接调用
       if(item && item.complete) {
         completeItems[i] = item;
       } else {
